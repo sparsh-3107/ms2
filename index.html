@@ -152,7 +152,36 @@
       pointer-events: none;
       z-index: 999;
     }
-  </style>
+    /* Heart Trail */
+  .heart-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.2rem;
+    color: #ff80ab;
+    animation: floatHeart 2s linear forwards;
+    z-index: 1000;
+  }
+  @keyframes floatHeart {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-150px) scale(1.5); }
+  }
+
+  /* Gallery */
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .gallery img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+</style>
 </head>
 <body>
   <div class="stars"></div>
@@ -180,8 +209,18 @@
     </div>
     <div class="slide">
       <div class="card">
-        <p>Dear maya,<br><br>Your love is the light in my world. I am endlessly thankful for your presence. Every second with you is magic, and I promise to love you beyond limits. 💖<br><br>Love,<br>sparsh 💌</p>
+        <p class="typewriter" data-text="Dear maya,
+
+Your love is the light in my world. I am endlessly thankful for your presence. Every second with you is magic, and I promise to love you beyond limits. 💖
+
+Love,
+sparsh 💌"></p><br><br>Your love is the light in my world. I am endlessly thankful for your presence. Every second with you is magic, and I promise to love you beyond limits. 💖<br><br>Love,<br>sparsh 💌</p>
         <button onclick="triggerFireworks()">🎆 Launch Fireworks</button>
+        <div class="gallery">
+          <img src="https://placekitten.com/200/200" alt="Photo 1" />
+          <img src="https://placekitten.com/201/200" alt="Photo 2" />
+          <img src="https://placekitten.com/202/200" alt="Photo 3" />
+        </div>
       </div>
     </div>
   </div>
@@ -189,7 +228,16 @@
   <button class="nav-btn prev" onclick="changeSlide(-1)">⬅️ Prev</button>
   <button class="nav-btn next" onclick="changeSlide(1)">Next ➡️</button>
   <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_f2119a6a1c.mp3" autoplay loop></audio>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">document.addEventListener('mousemove', (e) => {
+  const heart = document.createElement('div');
+  heart.textContent = '💖';
+  heart.className = 'heart-trail';
+  heart.style.left = e.pageX + 'px';
+  heart.style.top = e.pageY + 'px';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 2000);
+});
+</script>
   <script>
     const slides = document.querySelectorAll('.slide');
     const slider = document.getElementById('slider');
@@ -203,8 +251,9 @@
     }
 
     function typeWriter(el) {
-      if (!el || el.dataset.typed) return;
+      if (!el || el.dataset.typed || !el.dataset.text) return;
       el.dataset.typed = true;
+      el.textContent = '';
       const text = el.dataset.text;
       let i = 0;
       const interval = setInterval(() => {
@@ -218,8 +267,11 @@
     }
 
     function blowCandle() {
-      document.getElementById('flame').style.display = 'none';
-      confetti({ particleCount: 80, spread: 70 });
+      const flame = document.getElementById('flame');
+      if (flame) flame.style.display = 'none';
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70 });
+      }
     }
 
     function triggerFireworks() {
@@ -251,5 +303,14 @@
     // Initial typewriter
     typeWriter(slides[0].querySelector('.typewriter'));
   </script>
+<audio id="voiceGreeting" src="https://cdn.pixabay.com/download/audio/2023/05/25/audio_d7263c29a2.mp3" preload="auto"></audio>
+<script>
+  window.addEventListener('load', () => {
+    const voice = document.getElementById('voiceGreeting');
+    if (voice) {
+      voice.play().catch(e => console.log('Voice autoplay blocked'));
+    }
+  });
+</script>
 </body>
 </html>
